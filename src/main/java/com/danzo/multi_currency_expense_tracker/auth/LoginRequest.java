@@ -1,0 +1,15 @@
+package com.danzo.multi_currency_expense_tracker.auth;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+
+public record LoginRequest(
+        @Email(message = "must be email format")
+        @NotBlank(message = "email is required")
+        String email,
+
+        @NotBlank(message = "please provide a password")
+        String password
+) {
+}

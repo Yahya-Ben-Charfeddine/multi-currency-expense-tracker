@@ -5,6 +5,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,5 +32,10 @@ public class CustomExceptionHandler {
         problem.setProperty("errors", errors);
         return problem;
 
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ProblemDetail authenticationExceptionHandler(AuthenticationException e){
+        return  ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED,"Invalid email or password");
     }
 }
