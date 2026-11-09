@@ -11,5 +11,5 @@ public interface ExpenseRepo extends JpaRepository<Expense, UUID> {
 
     Optional<Expense> findByIdAndUserId(UUID id, UUID userId);
 
-    List<Expense> findAllByUserIdAndSpentOnBetweenOrderBySpentOnDesc(UUID userId, LocalDate from, LocalDate to);
+    List<Expense> findAllByUserIdAndSpentOnBetweenOrderBySpentOnDescCreatedAtDesc(UUID userId, LocalDate from, LocalDate to);
 }

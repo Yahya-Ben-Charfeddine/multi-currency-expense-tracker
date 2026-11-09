@@ -9,8 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 @Service
 public class ExpenseService {
@@ -45,6 +48,26 @@ public class ExpenseService {
         );
         Expense saved = expenseRepo.save(expense);
         return ExpenseResponse.from(saved);
+    }
+
+    public List<ExpenseResponse> list (String email, YearMonth month){
+        Users user = userRepo.findUserByEmail(email)
+                .orElseThrow(()->new CustomException("User not found", HttpStatus.NOT_FOUND));
+        LocalDate from = month.atDay(1);
+        LocalDate to = month.atEndOfMonth();
+        return expenseRepo.findAllByUserIdAndSpentOnBetweenOrderBySpentOnDescCreatedAtDesc(
+                user.getId(),
+                from,
+                to
+        ).stream().map(ExpenseResponse::from).toList();
+    }
+
+    public void delete(String email, UUID id){
+        Users user = userRepo.findUserByEmail(email)
+                .orElseThrow(()->new CustomException("User not found", HttpStatus.NOT_FOUND));
+        Expense expense = expenseRepo.findByIdAndUserId(id,user.getId())
+                .orElseThrow(()->new CustomException("Expense not found", HttpStatus.NOT_FOUND));
+        expenseRepo.delete(expense);
     }
 
 
